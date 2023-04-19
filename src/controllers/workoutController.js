@@ -1,15 +1,24 @@
 const workoutService = require("../services/workoutService");
 
+// GetAllWorkouts Controller
 const getAllWorkouts =(req, res) => {
     const allWorkout = workoutService.getAllWorkouts();
     res.send({status: "OK", data: allWorkout});
 };
 
+// GetOneWorkout Controller
 const getOneWorkout = (req, res) => {
-    const workout = workoutService.getOneWorkout();
-    res.send("Get an existing workout");
+    const {params: {workoutId}} = req;
+    if (!workoutId) {
+        return;
+    }
+
+    const workout = workoutService.getOneWorkout(workoutId);
+    res.send({status: "OK", data: workout});
+
 };
 
+// CreateNewWorkout Controller
 const createNewWorkout = (req, res) => {
     const {body} = req;
     if (!body.name ||
@@ -32,13 +41,28 @@ const createNewWorkout = (req, res) => {
     res.status(201).send({status: "OK", data: createWorkout});
 };
 
+// UpdateOneWorkout Controller
 const updateOneWorkout = (req, res) => {
-    const updateWorkout = workoutService.updateOneWorkout();
-    res.send("Update an existing workout");
+    const {
+        body,
+        params: {workoutId}} = req;
+    if (!workoutId) {
+        return;
+    }
+
+    const updateWorkout = workoutService.updateOneWorkout(workoutId, body);
+    res.send({status: "OK", data: updateWorkout});
 };
+
+// DeleteOneWorkout Controller
  const deleteOneWorkout = (req, res) => {
-    workoutService.deleteOneWorkout();
-    res.send("Delete an existing workout");
+    const {params: {workoutId}} = req;
+    if (!workoutId) {
+        return;
+    }
+    workoutService.deleteOneWorkout(workoutId);
+    res.status(204).send({status: "OK"});
+
 };
 
 module.exports = {
